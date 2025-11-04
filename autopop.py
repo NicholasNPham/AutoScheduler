@@ -9,10 +9,10 @@ while True:
             pass
             # This is where the Notion API Logic Goes
 
-        time.sleep()
+        time.sleep(43200)
     except KeyboardInterrupt:
         print("Stopped")
         break
     except Exception as error:
         print(error)
-        time.sleep(60)
+        time.sleep(3600)
