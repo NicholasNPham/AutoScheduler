@@ -1,25 +1,41 @@
-# Working on connection to Notion API need to download notion api client
+from notion_client import Client, extract_database_id
+from key import *
 
-from datetime import timedelta, datetime
-import zoneinfo
+notion = Client(auth=secret)
 
-timezone = zoneinfo.ZoneInfo('America/New_York')
-today = datetime.now(timezone) # YYYY-MM-DD HH:MM:SS.MMMMMM
-num_of_today = today.weekday() # var set a num of day: e.g. monday = 0, tuesday = 1 ...
+url = "https://www.notion.so/2a2443b974e280c8b297c9502026b24f?v=2a2443b974e280488e99000c13dacab2"
+database_id = extract_database_id(url)
 
-shift_dict = {}
+# Query the database using direct API call
+response = notion._clients[0].post(
+    f"https://api.notion.com/v1/databases/{database_id}/query",
+    headers={
+        "Authorization": f"Bearer {secret}",
+        "Notion-Version": "2022-06-28"
+    },
+    json={}
+)
 
-today_ahead = today + timedelta(days=1)
+data = response.json()
 
-for i in range(2, 7):
-    today_ahead += timedelta(days=1)
-    start = today_ahead.strftime("%Y-%m-%d") + "T08:00:00" + today_ahead.strftime("%z")
-    end = today_ahead.strftime("%Y-%m-%d") + "T17:00:00" + today_ahead.strftime("%z")
-    shift_dict["SAO10 SHIFT " + str(i - 1)] = [start[1:22] + ":" + start[22:], end[1:22] + ":" + end[22:]]
+print(f"Found {len(data['results'])} pages\n")
 
-for key, value in shift_dict.items():
-    print(f"{key} : {value}")
+for page in data['results']:
+    properties = page['properties']
 
-# print(f"'{today}' variable type: {type(today)}")
-# print(f"'{num_of_today}' variable type: {type(num_of_today)}")
+    # Extract Name
+    if 'Name' in properties:
+        name_data = properties['Name']['title']
+        name = name_data[0]['plain_text'] if name_data else "No name"
+    else:
+        name = "No name"
 
+    # Extract Date
+    if 'date' in properties and properties['date']['date']:
+        date = properties['date']['date']['start']
+    else:
+        date = "No date"
+
+    print(f"Name: {name}")
+    print(f"Date: {date}")
+    print("---")
