@@ -10,7 +10,7 @@ while True:
         current_day = today
         print(today)
 
-        if today == 5: # 5 Meaning Saturday
+        if today == 1: # 5 Meaning Saturday
             if last_run_day != today:
 
                 timezone = zoneinfo.ZoneInfo('America/New_York')
@@ -25,10 +25,12 @@ while True:
                     today_ahead += timedelta(days=1)
                     start = today_ahead.strftime("%Y-%m-%d") + "T08:00:00" + today_ahead.strftime("%z")
                     end = today_ahead.strftime("%Y-%m-%d") + "T17:00:00" + today_ahead.strftime("%z")
-                    shift_dict["SAO10 SHIFT " + str(i - 1)] = [start[1:22] + ":" + start[22:], end[1:22] + ":" + end[22:]]
+                    shift_dict["SAO10 SHIFT " + str(i - 1)] = [start[0:22] + ":" + start[22:], end[0:22] + ":" + end[22:]]
 
                 for key, value in shift_dict.items():
                     print(f"{key} : {value}")
+
+                print(shift_dict)
 
                 last_run_day = today # if it's the same day in 12 hours do not run
                 print("AUTO POPULATED NOTION SCHEDULE")
