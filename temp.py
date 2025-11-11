@@ -1,41 +1,28 @@
-from notion_client import Client, extract_database_id
+from notion_client import Client
 from key import *
 
+"""
+This is working on notion_client version 2.4.0 not 2.7.0
+2.7.0 does not have query() but does have extract_database_id() which is kind of nice
+2.4.0 is working but might have compatibility issues further testing is needed. 
+"""
+
+# Initialize client with your token
 notion = Client(auth=secret)
+print("Client created Successfully...")
 
-url = "https://www.notion.so/2a2443b974e280c8b297c9502026b24f?v=2a2443b974e280488e99000c13dacab2"
-database_id = extract_database_id(url)
+# Your database ID
+database_id = SAO_page_id
+print(f"Database ID: {database_id}")
 
-# Query the database using direct API call
-response = notion._clients[0].post(
-    f"https://api.notion.com/v1/databases/{database_id}/query",
-    headers={
-        "Authorization": f"Bearer {secret}",
-        "Notion-Version": "2022-06-28"
-    },
-    json={}
-)
+try:
+    response = notion.databases.query(database_id=database_id)
+    print("Success.")
 
-data = response.json()
+    for page in response['results']:
+        properties = page['properties']
+        print(properties)
 
-print(f"Found {len(data['results'])} pages\n")
-
-for page in data['results']:
-    properties = page['properties']
-
-    # Extract Name
-    if 'Name' in properties:
-        name_data = properties['Name']['title']
-        name = name_data[0]['plain_text'] if name_data else "No name"
-    else:
-        name = "No name"
-
-    # Extract Date
-    if 'date' in properties and properties['date']['date']:
-        date = properties['date']['date']['start']
-    else:
-        date = "No date"
-
-    print(f"Name: {name}")
-    print(f"Date: {date}")
-    print("---")
+except Exception as e:
+    print(f"Error Type: {type(e).__name__}")
+    print(f"Error Message: {e}")
