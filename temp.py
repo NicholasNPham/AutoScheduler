@@ -7,6 +7,12 @@ This is working on notion_client version 2.4.0 not 2.7.0
 2.4.0 is working but might have compatibility issues further testing is needed. 
 """
 
+"""
+2a2443b9-74e2-802b-9a1e-ebac75906542
+16dd872b-594c-81fe-8df9-000267cf4bb0
+2a2443b9-74e2-80c8-b297-c9502026b24f
+"""
+
 # Initialize client with your token
 notion = Client(auth=secret)
 print("Client created Successfully...")
@@ -21,6 +27,7 @@ try:
 
     for page in response['results']:
         properties = page['properties']
+        print(page['id'] + " :")
         print(properties)
 
 except Exception as e:
