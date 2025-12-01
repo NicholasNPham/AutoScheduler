@@ -33,3 +33,19 @@ from key import * # Notion API credentials
 # Notion Database Property Names
 NOTION_NAME_PROPERTY = "Name"
 NOTION_DATE_PROPERTY = "Date"
+
+# FUNCTIONS
+
+def initialize_notion_client(api_token):
+    """
+    Initialize Notion client with API credentials.
+
+    Args:
+        api_token: str - Notion integration API token
+
+    Returns:
+        Client: Initialized Notion client object
+    """
+    notion = Client(auth=api_token)
+    print("Client created Successfully...")
+    return notion
