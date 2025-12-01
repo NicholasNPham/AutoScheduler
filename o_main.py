@@ -44,7 +44,13 @@ SHIFT_NAME_PREFIX = 'SAO10 SHIFT'
 
 # FUNCTIONS
 def format_datetime_for_notion(dt):
+    formatted = dt.strftime('%Y-%m-%dT%H:%M:%S%z')
+    formatted_with_colon = formatted[0:22] + ':' + formatted[22:]
+    return formatted_with_colon
 
+def get_current_time_in_timezone(timezone_name):
+    timezone = zoneinfo.ZoneInfo(timezone_name)
+    return datetime.now(timezone)
 
 # MAIN LOOP SETUP
 
