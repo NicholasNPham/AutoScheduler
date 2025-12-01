@@ -1,3 +1,10 @@
+"""
+Notion Schedule Auto-Populator
+
+Automatically generates and uploads weekly shift schedules to a Notion database.
+Runs every Saturday to create Monday-Friday shifts for the following week.
+"""
+
 """IMPORTS"""
 # Standard Library Imports
 import time
