@@ -52,6 +52,12 @@ def get_current_time_in_timezone(timezone_name):
     timezone = zoneinfo.ZoneInfo(timezone_name)
     return datetime.now(timezone)
 
+def should_run_today(current_weekday, trigger_day, last_run_day):
+    if current_weekday == trigger_day and current_weekday != last_run_day:
+        return True
+    else:
+        return False
+
 # MAIN LOOP SETUP
 
 # MAIN LOOP
