@@ -49,3 +49,67 @@ def initialize_notion_client(api_token):
     notion = Client(auth=api_token)
     print("Client created Successfully...")
     return notion
+
+
+def get_database_row_ids(client, database_id):
+    """
+       Query Notion database and return list of row IDs.
+
+       Args:
+           client: Client - Initialized Notion client
+           database_id: str - ID of the Notion database to query
+
+       Returns:
+           list: List of row IDs (page IDs) from the database
+    """
+    row_id_list = []
+
+    response = client.databases.query(database_id=database_id)
+
+    for page in response['results']:
+        row_id = page['id']
+        row_id_list.append(row_id)
+
+    print(f'Found {len(row_id_list)} row IDs')
+
+    return row_id_list
+
+def create_notion_properties(shift_name, start_time, end_time):
+    """
+    Create a Notion properties dictionary for a shift.
+
+    Args:
+        shift_name: str - Name of the shift (e.g., "SAO10 SHIFT 1")
+        start_time: str - ISO 8601 formatted start time
+        end_time: str - ISO 8601 formatted end time
+
+    Returns:
+        dict: Notion API properties object ready for page update
+    """
+    text_property = {"title": [{"text": {"content": shift_name}}]}
+    date_property = {"date": {"start": start_time, "end": end_time}}
+    return {NOTION_NAME_PROPERTY: text_property, NOTION_DATE_PROPERTY: date_property}
+
+
+def update_notion_row(client, row_id, shift_name, start_time, end_time):
+    """
+    Update a single row in the Notion database with shift information.
+
+    Args:
+        client: Client - Initialized Notion client
+        row_id: str - ID of the row (page) to update
+        shift_name: str - Name of the shift
+        start_time: str - ISO 8601 formatted start time
+        end_time: str - ISO 8601 formatted end time
+
+    Returns:
+        bool: True if update successful, False otherwise
+    """
+    properties = create_notion_properties(shift_name, start_time, end_time)
+    try:
+        client.pages.update(page_id=row_id, properties=properties)
+        print(f"✓ Updated: {shift_name}")
+        return True
+    except Exception as e:
+        print(f"✗ Failed to update {shift_name}: {type(e).__name__} - {e}")
+        return False
