@@ -4,6 +4,7 @@ Notion Schedule Auto-Populator
 Automatically generates and uploads weekly shift schedules to a Notion database.
 Runs every Saturday to create Monday-Friday shifts for the following week.
 """
+from pygame import KSCAN_CURRENCYUNIT
 
 """IMPORTS"""
 
@@ -58,6 +59,23 @@ def should_run_today(current_weekday, trigger_day, last_run_day):
     else:
         return False
 
-# MAIN LOOP SETUP
+def generate_shift_schedule(start_date, num_shifts, shift_start_hour, shift_end_hour, shift_prefix):
 
-# MAIN LOOP
+    shift_schedule_dictionary = {}
+    current_date = start_date
+
+    for shift_number in range(1, num_shifts + 1):
+
+        current_date += timedelta(days=1)
+
+        start_time = current_date.replace(hour=shift_start_hour, minute=0, second=0)
+        end_time = current_date.replace(hour=shift_end_hour, minute=0, second=0)
+
+        start_formatted = format_datetime_for_notion(start_time)
+        end_formatted = format_datetime_for_notion(end_time)
+
+        shift_name = f'{shift_prefix} {shift_number}'
+
+        shift_schedule_dictionary[shift_name] = [start_formatted, end_formatted]
+
+    return shift_schedule_dictionary
