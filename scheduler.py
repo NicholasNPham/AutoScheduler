@@ -43,3 +43,44 @@ from schedule_utils import (
     should_run_today
 )
 
+# MAIN LOOP
+def run_scheduler():
+    """
+    Main scheduler loop - runs continuously and coordinates schedule updates.
+
+    [Add more details about what it does]
+    """
+    print("Initializing Notion Client...")
+    client = initialize_notion_client(SECRET)
+
+    print(f"Scheduler started!")
+    print(f"Checking every {CHECK_INTERVAL_SECONDS // 3600} hours for trigger day (Saturday)\n")
+
+    last_run_day = None
+    while True:
+        try:
+            current_time = get_current_time_in_timezone(TIMEZONE_NAME)
+            current_weekday = current_time.weekday()
+
+            print(f"Checking... Day: {current_weekday}, Time: {current_time.strftime('%Y-%m-%d %H:%M:%S')}")
+
+            if should_run_today(current_weekday, TRIGGER_DAY, last_run_day):
+                print(">>> GENERATING WORK SCHEDULE <<<")
+                schedule = generate_work_schedule(current_time)
+
+                print("Updating Notion database...")
+                update_database_with_schedule(client, WORK_PAGE_ID, schedule)
+
+                last_run_day = current_weekday
+                print("✓ Schedule update complete!\n")
+
+            time.sleep(CHECK_INTERVAL_SECONDS)
+        except KeyboardInterrupt:
+            print("\n\nScheduler stopped by user.")
+            break
+        except Exception as error:
+            print(error)
+            time.sleep(ERROR_RETRY_SECONDS)
+
+if __name__ == "__main__":
+    run_scheduler()
