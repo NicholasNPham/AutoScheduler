@@ -25,9 +25,6 @@ Last Modified: 2025-11-30
 # Third-party Imports
 from notion_client import Client
 
-# Local Imports
-from key import * # Notion API credentials
-
 # CONSTANTS
 
 # Notion Database Property Names
