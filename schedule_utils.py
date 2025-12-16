@@ -85,10 +85,11 @@ def generate_shift_schedule(start_date, num_shifts, shift_start_hour, shift_end_
 
     shift_schedule_dictionary = {}
     current_date = start_date
+    # Skips to Monday to iterate
+    current_date += timedelta(days=2)
 
     for shift_number in range(1, num_shifts + 1):
 
-        current_date += timedelta(days=1)
 
         start_time = current_date.replace(hour=shift_start_hour, minute=0, second=0)
         end_time = current_date.replace(hour=shift_end_hour, minute=0, second=0)
