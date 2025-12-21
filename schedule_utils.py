@@ -101,4 +101,6 @@ def generate_shift_schedule(start_date, num_shifts, shift_start_hour, shift_end_
 
         shift_schedule_dictionary[shift_name] = [start_formatted, end_formatted]
 
+        current_date += timedelta(days=1)
+
     return shift_schedule_dictionary
