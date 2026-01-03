@@ -62,7 +62,7 @@ def run_scheduler():
             current_time = get_current_time_in_timezone(TIMEZONE_NAME)
             current_weekday = current_time.weekday()
 
-            print(f"Checking... Day: {current_weekday}, Time: {current_time.strftime('%Y-%m-%d %H:%M:%S')}")
+            print(f"Checking... Day: {current_weekday}, Time: {current_time.strftime('%Y-%m-%d %H:%M:%S')}, Last Check Date: {last_run_day}")
 
             if should_run_today(current_weekday, TRIGGER_DAY, last_run_day):
                 print(">>> GENERATING WORK SCHEDULE <<<")
@@ -71,8 +71,8 @@ def run_scheduler():
                 print("Updating Notion database...")
                 update_database_with_schedule(client, WORK_PAGE_ID, schedule)
 
-                last_run_day = current_weekday
-                print("✓ Schedule update complete!\n")
+            last_run_day = current_weekday
+            print("✓ Schedule update complete!\n")
 
             time.sleep(CHECK_INTERVAL_SECONDS)
         except KeyboardInterrupt:
